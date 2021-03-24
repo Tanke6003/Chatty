@@ -30,6 +30,7 @@ class Server {
         //parseo del body
         this.app.use( express.json());
         //API end points
+        this.app.use('/api/mensajes',require('../router/mensajes'));
         this.app.use('/api/login',require('../router/auth'));
     }
 
