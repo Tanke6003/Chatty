@@ -1,23 +1,27 @@
 
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-
+import { AuthContext} from '../auth/AuthContext';
+import Swal from 'sweetalert2';
 export const LoginPage = () => {
+	const {login} = useContext(AuthContext);
 	const [form, setForm] = useState({
 		email:'test1@test.com',
 		password:'123456',
 		rememberme:false,
 	});
 	useEffect(() => {
-		const remembermeEmail = localStorage.getItem('email');
-		if(rememberme){
-			setForm({
-				
-			})
+		const email = localStorage.getItem('email');
+		if(email){
+			setForm((form)=>({
+				...form,
+				rememberme: true,
+				email
+			}))
 		}
 	},[])
 
-	const onChange = ({ target}) =>{
+	const onChange = ({target}) =>{
 		const { name , value } = target;
 		setForm({
 			...form,
@@ -31,7 +35,7 @@ export const LoginPage = () => {
 
 		});
 	}
-	const onSubmit = (ev) =>{
+	const onSubmit = async(ev) =>{
 		ev.preventDefault();
 		if (form.rememberme){
 			localStorage.setItem('email', form.email);
@@ -40,9 +44,16 @@ export const LoginPage = () => {
 		{
 			localStorage.removeItem('email');
 		}
-		//todo llamar back end
+		const { email , password } = form;
+		const ok = await  login(email,password);
+		if(!ok){
+		Swal.fire('Error','verifique el correo y contraseña','error');
+		}
 
-	}
+	} 	
+	const todoOk = () =>{
+		return ( form.email.length > 0 && form.password.length > 0)?true:false;
+	}	
 
     return (
         <form className="login100-form validate-form flex-sb flex-w" onSubmit={onSubmit}>
@@ -77,7 +88,8 @@ export const LoginPage = () => {
 					</div>
 
 					<div className="container-login100-form-btn m-t-17">
-						<button className="login100-form-btn">
+						<button  type="submit"className="login100-form-btn"
+						disabled={!todoOk()}>
 							Ingresar
 						</button>
 					</div>
