@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { ChattyApp } from './ChattyApp';
+import {ChatApp} from './ChatApp';
 import './index.css';
 
+
 ReactDOM.render(
-  <ChattyApp/>,
+  <ChatApp/>,
   document.getElementById('root')
 );
